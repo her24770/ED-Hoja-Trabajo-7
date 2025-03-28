@@ -1,38 +1,41 @@
-public class BinaryTree<T> {
+import java.util.Comparator;
 
+public class BinaryTree<T extends Comparable<T>> {
     protected T value;
     protected BinaryTree<T> parent;
     protected BinaryTree<T> left, right;
+    private Comparator<T> comparador;
 
-    // Constructor para un nodo vacío
+    // Constructores
     public BinaryTree() {
-        value = null;
-        parent = null;
-        left = right = this;
+        this(null);  // Usa orden natural (Comparable)
     }
 
-    // Constructor para un nodo con valor
-    public BinaryTree(T val) {
-        value = val;
-        right = left = new BinaryTree<>();
-        setLeft(left);
-        setRight(right);
+    public BinaryTree(Comparator<T> comparador) {
+        this.value = null;
+        this.parent = null;
+        this.left = this.right = this;
+        this.comparador = comparador;
     }
 
-    // Constructor para un nodo con valor y subárboles izquierdo y derecho
-    public BinaryTree(T val, BinaryTree<T> left, BinaryTree<T> right) {
-        value = val;
-        if (left == null) {
-            left = new BinaryTree<>();
+    // Método de comparación
+    private int compare(T a, T b) {
+        if (comparador != null) {
+            return comparador.compare(a, b);
+        } else {
+            return a.compareTo(b);  // Usa Comparable si no hay comparador
         }
-        setLeft(left);
-        if (right == null) {
-            right = new BinaryTree<>();
-        }
-        setRight(right);
     }
 
-    // Método para obtener el subárbol izquierdo
+    // Métodos básicos del árbol
+    public boolean isEmpty() {
+        return value == null;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
     public BinaryTree<T> getLeft() {
         return left;
     }
@@ -41,12 +44,11 @@ public class BinaryTree<T> {
         return right;
     }
 
-    // Método para obtener el padre del nodo
     public BinaryTree<T> getParent() {
         return parent;
     }
 
-    // Método para establecer el subárbol izquierdo
+    // Métodos de modificación
     public void setLeft(BinaryTree<T> newLeft) {
         if (isEmpty()) return;
         if (left != null && left.getParent() == this) {
@@ -56,7 +58,6 @@ public class BinaryTree<T> {
         left.setParent(this);
     }
 
-    // Método para establecer el subárbol derecho
     public void setRight(BinaryTree<T> newRight) {
         if (isEmpty()) return;
         if (right != null && right.getParent() == this) {
@@ -66,37 +67,48 @@ public class BinaryTree<T> {
         right.setParent(this);
     }
 
-    // Método para establecer el padre del nodo
     protected void setParent(BinaryTree<T> newParent) {
         if (!isEmpty()) {
             parent = newParent;
         }
     }
 
-    // Método para verificar si el nodo está vacío
-    public boolean isEmpty() {
-        return value == null;
-    }
-
-    // Método para obtener el valor del nodo
-    public T getValue() {
-        return value;
-    }
-
-    // Método para establecer el valor del nodo
-    public void setValue(T val) {
-        value = val;
-    }
-
-    // Método para verificar si el nodo es un hijo izquierdo
-    public boolean isLeftChild() {
-        if (parent == null) {
-            return false;
+    // Operaciones principales
+    public void insert(T val) {
+        if (isEmpty()) {
+            value = val;
+            left = new BinaryTree<>(comparador);
+            right = new BinaryTree<>(comparador);
+            left.setParent(this);
+            right.setParent(this);
+        } else {
+            int cmp = compare(val, this.value);
+            if (cmp < 0) {
+                left.insert(val);
+            } else if (cmp > 0) {
+                right.insert(val);
+            }
+            // Ignora duplicados (cmp == 0)
         }
-        return this == parent.getLeft();
     }
 
-    // Método para recorrer el árbol en orden (in-order traversal)
+    public T buscar(String clave, ComparadorBusqueda<T> comparadorBusqueda) {
+        if (isEmpty()) {
+            return null;
+        }
+
+        String valorClave = comparadorBusqueda.obtenerValor(this.value);
+
+        if (valorClave.equals(clave)) {
+            return this.value;
+        } else if (clave.compareTo(valorClave) < 0) {
+            return left.buscar(clave, comparadorBusqueda);
+        } else {
+            return right.buscar(clave, comparadorBusqueda);
+        }
+    }
+
+    // Recorridos
     public void inOrderTraversal() {
         if (!isEmpty()) {
             left.inOrderTraversal();
@@ -105,16 +117,9 @@ public class BinaryTree<T> {
         }
     }
 
-    // Método para insertar un valor en el árbol (BST-style)
-    public void insert(T val) {
-        if (isEmpty()) {
-            value = val;
-            left = new BinaryTree<>();
-            right = new BinaryTree<>();
-        } else if (((Comparable<T>) val).compareTo(val) < 0) {
-            left.insert(value);
-        } else {
-            right.insert(value);
-        }
+    // Método para limpiar el árbol
+    public void clear() {
+        value = null;
+        left = right = this;
     }
 }

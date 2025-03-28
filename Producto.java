@@ -44,9 +44,9 @@ public class Producto implements Comparable<Producto> {
         return "SKU: " + sku + ", Nombre: " + nombre + ", Descripción: " + descripcion + ", Tallas: " + tallasDisponibles;
     }
 
-    // Implementación del método compareTo para comparar productos por SKU
+    // Implementación de Comparable<Producto> (por defecto, comparar por SKU)
     @Override
-    public int compareTo(Producto otro) {
-        return this.sku.compareTo(otro.sku);
+    public int compareTo(Producto other) {
+        return this.sku.compareTo(other.sku);
     }
 }
