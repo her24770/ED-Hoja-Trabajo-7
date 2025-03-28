@@ -6,9 +6,8 @@ public class BinaryTree<T extends Comparable<T>> {
     protected BinaryTree<T> left, right;
     private Comparator<T> comparador;
 
-    // Constructores
     public BinaryTree() {
-        this(null);  // Usa orden natural (Comparable)
+        this(null);
     }
 
     public BinaryTree(Comparator<T> comparador) {
@@ -18,16 +17,14 @@ public class BinaryTree<T extends Comparable<T>> {
         this.comparador = comparador;
     }
 
-    // Método de comparación
     private int compare(T a, T b) {
         if (comparador != null) {
             return comparador.compare(a, b);
         } else {
-            return a.compareTo(b);  // Usa Comparable si no hay comparador
+            return a.compareTo(b);
         }
     }
 
-    // Métodos básicos del árbol
     public boolean isEmpty() {
         return value == null;
     }
@@ -48,7 +45,6 @@ public class BinaryTree<T extends Comparable<T>> {
         return parent;
     }
 
-    // Métodos de modificación
     public void setLeft(BinaryTree<T> newLeft) {
         if (isEmpty()) return;
         if (left != null && left.getParent() == this) {
@@ -73,7 +69,6 @@ public class BinaryTree<T extends Comparable<T>> {
         }
     }
 
-    // Operaciones principales
     public void insert(T val) {
         if (isEmpty()) {
             value = val;
@@ -88,38 +83,48 @@ public class BinaryTree<T extends Comparable<T>> {
             } else if (cmp > 0) {
                 right.insert(val);
             }
-            // Ignora duplicados (cmp == 0)
         }
     }
 
-    public T buscar(String clave, ComparadorBusqueda<T> comparadorBusqueda) {
+    public T buscarPorSKU(String sku) {
         if (isEmpty()) {
             return null;
         }
 
-        String valorClave = comparadorBusqueda.obtenerValor(this.value);
+        String skuActual = ((Producto)this.value).getSku();
+        int cmp = sku.compareTo(skuActual);
 
-        if (valorClave.equals(clave)) {
+        if (cmp == 0) {
             return this.value;
-        } else if (clave.compareTo(valorClave) < 0) {
-            return left.buscar(clave, comparadorBusqueda);
+        } else if (cmp < 0) {
+            return left.buscarPorSKU(sku);
         } else {
-            return right.buscar(clave, comparadorBusqueda);
+            return right.buscarPorSKU(sku);
         }
     }
 
-    // Recorridos
+    public T buscarPorNombre(String nombre) {
+        if (isEmpty()) {
+            return null;
+        }
+
+        String nombreActual = ((Producto)this.value).getNombre();
+        int cmp = nombre.compareToIgnoreCase(nombreActual);
+
+        if (cmp == 0) {
+            return this.value;
+        } else if (cmp < 0) {
+            return left.buscarPorNombre(nombre);
+        } else {
+            return right.buscarPorNombre(nombre);
+        }
+    }
+
     public void inOrderTraversal() {
         if (!isEmpty()) {
             left.inOrderTraversal();
             System.out.println(value);
             right.inOrderTraversal();
         }
-    }
-
-    // Método para limpiar el árbol
-    public void clear() {
-        value = null;
-        left = right = this;
     }
 }
