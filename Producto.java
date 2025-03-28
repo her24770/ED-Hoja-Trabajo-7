@@ -1,3 +1,6 @@
+/*
+ *Clase Producto como objeto guardado en Maps o listas
+ */
 import java.util.Map;
 
 public class Producto implements Comparable<Producto> {
@@ -7,6 +10,12 @@ public class Producto implements Comparable<Producto> {
     private Map<String, Integer> tallasDisponibles; // Tallas y cantidades disponibles
 
     // Constructor
+    /**
+     * @param sku
+     * @param nombre
+     * @param descripcion
+     * @param tallasDisponibles
+     */
     public Producto(String sku, String nombre, String descripcion, Map<String, Integer> tallasDisponibles) {
         this.sku = sku;
         this.nombre = nombre;
@@ -15,26 +24,44 @@ public class Producto implements Comparable<Producto> {
     }
 
     // Getters y setters
+    /**
+     * @return
+     */
     public String getSku() {
         return sku;
     }
 
+    /**
+     * @return
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * @return
+     */
     public String getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * @return
+     */
     public Map<String, Integer> getTallasDisponibles() {
         return tallasDisponibles;
     }
 
+    /**
+     * @param descripcion
+     */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
+    /**
+     * @param tallasDisponibles
+     */
     public void setTallasDisponibles(Map<String, Integer> tallasDisponibles) {
         this.tallasDisponibles = tallasDisponibles;
     }

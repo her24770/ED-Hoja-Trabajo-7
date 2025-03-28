@@ -1,3 +1,6 @@
+/**
+ * Clase para delimiter el orden de los productos por nombre usando un comparador.
+ */
 import java.util.Comparator;
 
 public class ComparadorPorNombre implements Comparator<Producto> {

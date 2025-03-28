@@ -1,3 +1,11 @@
+/**
+ * Estructura de Datos
+ * Programa que simula un inventario de ropa deportiva
+ * Hoja de trabajo #7
+ * @version 1.0
+ * @date 27/03/2025
+ * @autor Josue Hernández
+ */
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,23 +25,6 @@ public class Main {
         
         // Cargar datos de ejemplo
         cargarProductosDesdeCSV(arbolPorSKU, arbolPorNombre, "inventario_ropa_deportiva_30.csv");
-        /*Map<String, Integer> tallas = new HashMap<>();
-        tallas.put("S", 10);
-        tallas.put("M", 5);
-        
-        Producto p1 = new Producto("243", "camiseta", "Algodón orgánico", tallas);
-        Producto p2 = new Producto("23", "aaaa", "Algodón orgánico", tallas);
-        Producto p3 = new Producto("723", "iii", "Algodón orgánico", tallas);
-        Producto p4 = new Producto("423", "u", "Algodón orgánico", tallas);
-        
-        arbolPorSKU.insert(p1);
-        arbolPorNombre.insert(p1);
-        arbolPorSKU.insert(p2);
-        arbolPorNombre.insert(p2);
-        arbolPorSKU.insert(p3);
-        arbolPorNombre.insert(p3);
-        arbolPorSKU.insert(p4);
-        arbolPorNombre.insert(p4);*/
         
         while (true) {
             System.out.println("\n--- MENÚ DE INVENTARIO ---");
@@ -187,16 +178,13 @@ public class Main {
                     continue;
                 }
                 
-                // Procesar cada línea
                 String[] datos = linea.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1); // Regex para manejar comas en descripción
                 
                 if (datos.length >= 3) {
-                    // Limpiar y extraer datos
                     String sku = datos[0].trim();
                     String nombre = datos[1].trim();
                     String descripcion = datos[2].trim();
                     
-                    // Procesar tallas (si existe la columna)
                     Map<String, Integer> tallas = new HashMap<>();
                     if (datos.length > 3) {
                         String[] tallasData = datos[3].trim().split("\\|");
@@ -208,7 +196,6 @@ public class Main {
                         }
                     }
                     
-                    // Crear y agregar producto
                     Producto producto = new Producto(sku, nombre, descripcion, tallas);
                     arbolPorSKU.insert(producto);
                     arbolPorNombre.insert(producto);
