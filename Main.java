@@ -1,17 +1,23 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);
+    
 
 
     public static void main(String[] args) {
 
+        Scanner scanner = new Scanner(System.in);
         BinaryTree<Producto> arbolPorSKU = new BinaryTree<>();
         BinaryTree<Producto> arbolPorNombre = new BinaryTree<>(new ComparadorPorNombre());
+        
         // Cargar datos de ejemplo
-        Map<String, Integer> tallas = new HashMap<>();
+        cargarProductosDesdeCSV(arbolPorSKU, arbolPorNombre, "inventario_ropa_deportiva_30.csv");
+        /*Map<String, Integer> tallas = new HashMap<>();
         tallas.put("S", 10);
         tallas.put("M", 5);
         
@@ -27,7 +33,7 @@ public class Main {
         arbolPorSKU.insert(p3);
         arbolPorNombre.insert(p3);
         arbolPorSKU.insert(p4);
-        arbolPorNombre.insert(p4);
+        arbolPorNombre.insert(p4);*/
         
         while (true) {
             System.out.println("\n--- MENÚ DE INVENTARIO ---");
@@ -71,7 +77,7 @@ public class Main {
                     Producto nuevo = new Producto(sku, nombre, descripcion, tallasNuevo);
                     arbolPorSKU.insert(nuevo);
                     arbolPorNombre.insert(nuevo);
-                    System.out.println("✔ Producto agregado exitosamente");
+                    System.out.println("Producto agregado exitosamente");
                     break;
                 }
                 
@@ -167,6 +173,49 @@ public class Main {
                     System.out.println("Opcion invalida");
                 }
             }
+        }
+    }
+
+    private static void cargarProductosDesdeCSV(BinaryTree<Producto> arbolPorSKU, BinaryTree<Producto> arbolPorNombre, String rutaArchivo) {
+        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+            String linea;
+            boolean primeraLinea = true; 
+            
+            while ((linea = br.readLine()) != null) {
+                if (primeraLinea) {
+                    primeraLinea = false;
+                    continue;
+                }
+                
+                // Procesar cada línea
+                String[] datos = linea.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1); // Regex para manejar comas en descripción
+                
+                if (datos.length >= 3) {
+                    // Limpiar y extraer datos
+                    String sku = datos[0].trim();
+                    String nombre = datos[1].trim();
+                    String descripcion = datos[2].trim();
+                    
+                    // Procesar tallas (si existe la columna)
+                    Map<String, Integer> tallas = new HashMap<>();
+                    if (datos.length > 3) {
+                        String[] tallasData = datos[3].trim().split("\\|");
+                        for (String tallaInfo : tallasData) {
+                            String[] partes = tallaInfo.split(":");
+                            if (partes.length == 2) {
+                                tallas.put(partes[0].trim(), Integer.parseInt(partes[1].trim()));
+                            }
+                        }
+                    }
+                    
+                    // Crear y agregar producto
+                    Producto producto = new Producto(sku, nombre, descripcion, tallas);
+                    arbolPorSKU.insert(producto);
+                    arbolPorNombre.insert(producto);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo CSV:");
         }
     }
 }
